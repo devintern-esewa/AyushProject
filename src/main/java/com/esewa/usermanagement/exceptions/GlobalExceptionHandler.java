@@ -7,8 +7,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserAlreadyRegisteredException.class)
-    public ExceptionDto userAlreadyRegistered(UserAlreadyRegisteredException exception){
-            return new ExceptionDto(exception.getCode(), exception.getMessage());
+    @ExceptionHandler(AlreadyRegisteredException.class)
+    public ExceptionDto AlreadyRegisteredException(AlreadyRegisteredException exception){
+        return new ExceptionDto("504", exception.getMessage());
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ExceptionDto AlreadyRegisteredException(UserNotFoundException exception){
+        return new ExceptionDto("505", exception.getMessage());
+    }
+
 }

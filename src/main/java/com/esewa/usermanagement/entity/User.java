@@ -20,4 +20,8 @@ public class User {
     private String email;
     @Enumerated(EnumType.STRING)
     private RoleType role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "wallet_id")
+    private Wallet wallet;
 }
