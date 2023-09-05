@@ -1,14 +1,12 @@
 package com.esewa.usermanagement.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Wallet {
@@ -16,6 +14,13 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    public Wallet(long amount, Long userId) {
+        this.amount = amount;
+        this.userId = userId;
+    }
+
     private Long amount;
+    private Long userId;
 
 }

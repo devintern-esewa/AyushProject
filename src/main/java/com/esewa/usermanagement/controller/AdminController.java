@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,12 +20,17 @@ public class AdminController {
         return adminService.registerUser(user);
     }
 
+    @PostMapping("/multiple-users")
+    public List<User> registerMultipleUsers(@RequestBody List<User> userList) {
+         return adminService.registerMultipleUsers(userList);
+    }
+
     @GetMapping("/user")
     public List<User> users(){
         return adminService.getUsers();
     }
 
-    @PostMapping("/user/{id}")
+    @PostMapping("/user/{id}/remove")
     public void remove(@PathVariable("id") Long userId){
          adminService.removeUser(userId);
     }

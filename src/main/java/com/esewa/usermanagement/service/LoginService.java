@@ -6,13 +6,11 @@ import com.esewa.usermanagement.dto.LoginDto;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
 import com.esewa.usermanagement.jwt.JwtHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,7 +22,6 @@ public class LoginService {
 
     public ResponseEntity<JwtResponse> loginUser(LoginDto credentials) {
 
-       // try{
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 credentials.getUsername(), credentials.getPassword()));
             if (authentication.isAuthenticated()) {
@@ -33,11 +30,8 @@ public class LoginService {
                 JwtResponse response = JwtResponse.builder()
                         .jwtToken(token)
                         .username(authentication.getName()).build();
-                return new ResponseEntity<>(response, HttpStatus.OK);
+                return ResponseEntity.ok(response);
             }
-       // } catch (Exception ex) {
-
-            throw new UserNotFoundException(ExceptionMessages.UserNotFoundMessage);
-     //   }
+            throw new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND_MESSAGE);
     }
 }
