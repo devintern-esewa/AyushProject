@@ -7,7 +7,23 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-#  security:
-#    user:
-#      name: aayush
-#      password: aayush@123
+
+jwt:
+  secret:
+    key: "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"
+  expiry: 1800000
+
+admin:
+  name: "Aayush"
+  password: "aayush"
+  email: "caayush96@gmail.com"
+  role: "ROLE_ADMIN"
+  phone: "9844430402"
+
+thread:
+  corePoolSize: 10
+  maxPoolSize: 10
+  queueCapacity: 100
+  threadNamePrefix: "Save-Multiple-Users-thread-pool-"
+
+

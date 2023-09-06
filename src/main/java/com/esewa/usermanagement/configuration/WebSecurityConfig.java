@@ -1,28 +1,37 @@
 package com.esewa.usermanagement.configuration;
 
+import com.esewa.usermanagement.jwt.JwtAuthenticationEntryPoint;
+import com.esewa.usermanagement.jwt.JwtAuthenticationFilter;
+import com.esewa.usermanagement.jwt.JwtHelper;
+import com.esewa.usermanagement.service.CustomUserDetail;
+import com.esewa.usermanagement.service.CustomUserDetailService;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.bytecode.enhance.internal.tracker.NoopCollectionTracker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import static org.springframework.security.config.Customizer.withDefaults;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+
+    private final CustomUserDetailService customUserDetailService;
+
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -30,60 +39,34 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // Allow requests from any origin (you can restrict this)
-        configuration.addAllowedMethod("GET");
-        configuration.addAllowedMethod("POST");
-        configuration.addAllowedMethod("PUT");
-        configuration.addAllowedMethod("DELETE");
-        configuration.addAllowedHeader("*"); // Allow all headers (you can restrict this)
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http
-        /*        .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/public").permitAll())*/
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/home").permitAll() //Any created user can access
+                        .requestMatchers("/homepage/**").permitAll() //Any created user can access
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/manager/**").hasAnyRole("ADMIN","MANAGER")
-                        .requestMatchers("/user/**").hasAnyRole("ADMIN","MANAGER","USER")
+                        .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
-                .httpBasic(withDefaults());
-        return http.build();
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        UserDetails user = User.withUsername("Aayush")
-                .password(passwordEncoder().encode("aayush"))
-                .roles("ADMIN")
-                .build();
-        UserDetails user2 = User.withUsername("keshav")
-                .password(passwordEncoder().encode("keshav"))
-                .roles("MANAGER")
-                .build();
-        UserDetails user3 = User.withUsername("angad")
-                .password(passwordEncoder().encode("angad"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user,user2,user3);
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
-
-/*    //Enables to login without encoding password
-    @Bean
-    public PasswordEncoder passwordEncoder()
-    {
-        return NoOpPasswordEncoder.getInstance();
-    }*/
 
 }
