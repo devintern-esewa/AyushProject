@@ -28,7 +28,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public User registerUser(User user) {
 
-        return userService.registerUser(user);
+        User registeredUser = userService.registerUser(user);
+        emailService.sendEmail(registeredUser.getEmail());
+        return registeredUser;
 
     }
 
