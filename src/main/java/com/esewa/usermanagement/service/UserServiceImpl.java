@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Async("saveMultipleUsersThreadPoolTaskExecutor")
     public  CompletableFuture<User> registerUserAsync(User user) {
-        System.out.println(Thread.currentThread());
         Optional<User> userExists = userRepository.findByName(user.getName());
         if (userExists.isPresent()) {
             log.error(Exceptions.USER_ALREADY_REGISTERED.getMessage() + new Date());
