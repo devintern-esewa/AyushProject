@@ -14,13 +14,12 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long amount;
+    private Long userId;
 
     public Wallet(long amount, Long userId) {
         this.amount = amount;
         this.userId = userId;
     }
-
-    private Long amount;
-    private Long userId;
 
 }

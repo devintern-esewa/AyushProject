@@ -16,10 +16,12 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserService userService;
     private final RegistrationLogService logService;
+    private final EmailService emailService;
 
-    public AdminServiceImpl (UserService userService, RegistrationLogService logService) {
+    public AdminServiceImpl (UserService userService, RegistrationLogService logService, EmailService emailService) {
         this.userService = userService;
         this.logService = logService;
+        this.emailService = emailService;
         this.createAdminUser();
     }
 
@@ -58,6 +60,7 @@ public class AdminServiceImpl implements AdminService {
                     logService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
                 } else {
                     logService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
+                    emailService.sendEmail(user.getEmail());
                 }
                 return user;
             });
