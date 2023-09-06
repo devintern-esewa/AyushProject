@@ -21,8 +21,8 @@ public class AdminController {
     }
 
     @PostMapping("/multiple-users")
-    public List<User> registerMultipleUsers(@RequestBody List<User> userList) {
-         return adminService.registerMultipleUsers(userList);
+    public List<User> registerMultipleUsers(@RequestBody List<User> users) {
+         return adminService.registerMultipleUsers(users);
     }
 
     @GetMapping("/user")

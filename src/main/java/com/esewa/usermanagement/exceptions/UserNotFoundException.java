@@ -1,7 +1,7 @@
 package com.esewa.usermanagement.exceptions;
 
-public class UserNotFoundException extends RuntimeException{
-    public UserNotFoundException (String message){
-        super(message);
-    }
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class UserNotFoundException extends RuntimeException {
 }

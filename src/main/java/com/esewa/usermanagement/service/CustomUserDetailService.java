@@ -1,7 +1,6 @@
 package com.esewa.usermanagement.service;
 
-import com.esewa.usermanagement.constants.ExceptionMessages;
-import com.esewa.usermanagement.entity.User;
+import com.esewa.usermanagement.constants.Exceptions;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
 import com.esewa.usermanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,6 @@ public class CustomUserDetailService implements UserDetailsService {
 
         return userRepository.findByName(username)
                 .map(CustomUserDetail::new)
-                .orElseThrow(() -> new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND_MESSAGE));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

@@ -1,6 +1,6 @@
 package com.esewa.usermanagement.service;
 
-import com.esewa.usermanagement.constants.ExceptionMessages;
+import com.esewa.usermanagement.constants.Exceptions;
 import com.esewa.usermanagement.dto.JwtResponse;
 import com.esewa.usermanagement.dto.LoginDto;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
@@ -32,6 +32,6 @@ public class LoginService {
                         .username(authentication.getName()).build();
                 return ResponseEntity.ok(response);
             }
-            throw new UserNotFoundException(ExceptionMessages.USER_NOT_FOUND_MESSAGE);
+            throw new UserNotFoundException();
     }
 }

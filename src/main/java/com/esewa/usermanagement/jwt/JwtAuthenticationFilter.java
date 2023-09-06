@@ -1,7 +1,5 @@
 package com.esewa.usermanagement.jwt;
 
-import com.esewa.usermanagement.constants.ExceptionMessages;
-import com.esewa.usermanagement.exceptions.AlreadyRegisteredException;
 import com.esewa.usermanagement.service.CustomUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,8 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception ex) {
-            log.info(ex.getMessage());
-           // throw new AlreadyRegisteredException(ExceptionMessages.USER_ALREADY_REGISTERED_MESSAGE);
+            log.error(ex.getMessage());
         }
         filterChain.doFilter(request, response);
     }

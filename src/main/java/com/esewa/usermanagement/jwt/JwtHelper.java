@@ -1,5 +1,6 @@
 package com.esewa.usermanagement.jwt;
 
+import com.esewa.usermanagement.configuration.JWTConfigurationProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,7 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,9 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class JwtHelper {
 
-    private final Environment env;
+    private final JWTConfigurationProperties jwtConfigProperties;
+    @Value("$")
+    private String secretKey;
 
     public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -34,12 +37,12 @@ public class JwtHelper {
                 .setClaims(claims)
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + Integer.parseInt(env.getProperty("jwt.expiration"))))
+                .setExpiration(new Date(System.currentTimeMillis() + Integer.parseInt(jwtConfigProperties.getExpiry())))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
     private Key getSignKey() {
-        byte[] keyBytes= Decoders.BASE64.decode(env.getProperty("jwt.secret.key"));
+        byte[] keyBytes= Decoders.BASE64.decode(jwtConfigProperties.getSecret().get("key"));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

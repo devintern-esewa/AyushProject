@@ -7,7 +7,7 @@ import java.util.List;
 public interface AdminService {
     User registerUser(User user);
 
-    List<User> registerMultipleUsers(List<User> userList);
+    List<User> registerMultipleUsers(List<User> users);
 
     List<User> getUsers();
 

@@ -10,4 +10,11 @@ spring:
 jwt:
   secret:
     key: "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"
-  expiration: 1800000
+  expiry: "1800000"
+admin:
+  name: "Aayush"
+  password: "aayush"
+  email: "caayush96@gmail.com"
+  role: "ROLE_ADMIN"
+  phone: "9844430402"
+
