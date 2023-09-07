@@ -9,7 +9,9 @@ group = 'com.esewa'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '20'
+//	sourceCompatibility = '20'
+	sourceCompatibility = JavaVersion.VERSION_17
+
 }
 
 repositories {
@@ -34,3 +36,5 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
