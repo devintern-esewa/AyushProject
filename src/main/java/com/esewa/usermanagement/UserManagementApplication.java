@@ -2,12 +2,14 @@ package com.esewa.usermanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableAsync
-@EnableTransactionManagement
+//@EnableTransactionManagement
+@ComponentScan(basePackages = "com.esewa.usermanagement.controller") // Specify the package containing MainController
+
 public class UserManagementApplication {
 
 	public static void main(String[] args) {
@@ -15,3 +17,4 @@ public class UserManagementApplication {
 	}
 
 }
+
