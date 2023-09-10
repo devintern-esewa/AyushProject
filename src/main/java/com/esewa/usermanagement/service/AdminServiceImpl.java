@@ -15,12 +15,12 @@ import java.util.concurrent.CompletableFuture;
 public class AdminServiceImpl implements AdminService {
 
     private final UserService userService;
-    private final RegistrationLogService logService;
+    private final RegistrationLogService registrationLogService;
     private final EmailService emailService;
 
-    public AdminServiceImpl (UserService userService, RegistrationLogService logService, EmailService emailService) {
+    public AdminServiceImpl (UserService userService, RegistrationLogService registrationLogService, EmailService emailService) {
         this.userService = userService;
-        this.logService = logService;
+        this.registrationLogService = registrationLogService;
         this.emailService = emailService;
         this.createAdminUser();
     }
@@ -29,7 +29,7 @@ public class AdminServiceImpl implements AdminService {
     public User registerUser(User user) {
 
         User registeredUser = userService.registerUser(user);
-        emailService.sendEmail(registeredUser.getEmail());
+        emailService.sendEmail(registeredUser);
         return registeredUser;
 
     }
@@ -59,10 +59,10 @@ public class AdminServiceImpl implements AdminService {
             future.handle((user, ex) -> {
                 if (ex != null) {
                     log.error("Error creating user: " + ex.getMessage());
-                    logService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
+                    registrationLogService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
                 } else {
-                    logService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
-                    emailService.sendEmail(user.getEmail());
+                    registrationLogService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
+                    emailService.sendEmail(user);
                 }
                 return user;
             });

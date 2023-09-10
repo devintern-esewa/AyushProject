@@ -2,7 +2,7 @@ package com.esewa.usermanagement.service;
 
 import com.esewa.usermanagement.annotation.HashPassword;
 import com.esewa.usermanagement.configuration.AdminConfigurationProperties;
-import com.esewa.usermanagement.constants.Exceptions;
+import com.esewa.usermanagement.enums.Exceptions;
 import com.esewa.usermanagement.entity.User;
 import com.esewa.usermanagement.entity.Wallet;
 import com.esewa.usermanagement.enums.RoleType;
@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
     private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminConfigurationProperties adminConfigurationProperties;
-
 
     @Override
     @HashPassword

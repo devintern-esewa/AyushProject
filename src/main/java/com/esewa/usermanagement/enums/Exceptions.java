@@ -1,4 +1,4 @@
-package com.esewa.usermanagement.constants;
+package com.esewa.usermanagement.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

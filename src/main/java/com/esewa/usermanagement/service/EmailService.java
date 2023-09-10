@@ -1,5 +1,7 @@
 package com.esewa.usermanagement.service;
 
+import com.esewa.usermanagement.entity.User;
+
 public interface EmailService {
-    void sendEmail(String recipientEmail);
+    void sendEmail(User userDetail);
 }

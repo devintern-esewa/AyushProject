@@ -1,6 +1,5 @@
 package com.esewa.usermanagement.service;
 
-import com.esewa.usermanagement.constants.Exceptions;
 import com.esewa.usermanagement.dto.JwtResponse;
 import com.esewa.usermanagement.dto.LoginDto;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
