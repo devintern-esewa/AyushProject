@@ -7,6 +7,7 @@ import com.esewa.usermanagement.exceptions.AlreadyRegisteredException;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
 import com.esewa.usermanagement.repository.UserRepository;
 import com.esewa.usermanagement.repository.WalletRepository;
+import com.esewa.usermanagement.service.impl.UserServiceImpl;
 import com.esewa.usermanagement.testobjectbuilder.TestUserBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +44,7 @@ public class UserServiceTest {
     private UserServiceImpl userService;
 
     @Test
-    void testRegisterUserAsync_SuccessfulRegistration() {
+    void registerUserAsync_whenRegisterUserAsync_thenSucceed() {
 
         User userToRegister = TestUserBuilder.createUser();
 
@@ -61,17 +62,18 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRegisterUserAsync_duplicateUsers() {
+    void registerUserAsync_whenRegisterUserAsyncWithDuplicateUsers_thenThrowsDuplicateUserException() {
 
         User duplicateUser = TestUserBuilder.createUser();
 
         when(userRepository.findByName(duplicateUser.getName())).thenReturn(Optional.of(duplicateUser));
 
-        assertThrows(RuntimeException.class, () -> userService.registerUserAsync(duplicateUser));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.registerUserAsync(duplicateUser));
+        assertEquals("Duplicate User: " + duplicateUser.getName(), exception.getMessage());
     }
 
     @Test
-    void testRegisterUserAsync_blacklistedUser() {
+    void registerUserAsync_whenRegisterUserAsyncWithBlacklistedUser_thenThrowsBlackListedUSerException() {
 
         User blackListedUser = TestUserBuilder.createBlackListedUser();
 
@@ -79,11 +81,12 @@ public class UserServiceTest {
                 .thenReturn(Optional.empty());
         when(userRepository.save(blackListedUser)).then(returnsFirstArg());
 
-        assertThrows(RuntimeException.class, () -> userService.registerUserAsync(blackListedUser));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.registerUserAsync(blackListedUser));
+        assertEquals("Blacklisted User: " + blackListedUser.getName(), exception.getMessage());
     }
 
     @Test
-    void testRegisterUser_successfulRegistration() {
+    void registerUser_whenRegisterUser_thenSucceed() {
 
         User user = TestUserBuilder.createUser();
 
@@ -93,22 +96,22 @@ public class UserServiceTest {
 
         User registeredUser = userService.registerUser(user);
 
-        assertEquals(user.getName(),registeredUser.getName());
+        assertEquals(user.getName(), registeredUser.getName());
     }
 
     @Test
-    void testRegisterUser_alreadyRegistered() {
+    void registerUser_whenRegister_alreadyRegisteredUser_thenThrowsAlreadyRegisteredException() {
 
         User user = TestUserBuilder.createUser();
 
         when(userRepository.findByName(user.getName())).thenReturn(Optional.of(user));
 
         assertThrows(AlreadyRegisteredException.class, () -> userService.registerUser(user));
-        verify(userRepository,never()).save(any(User.class));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
-    void testGetUsers_succeeds() {
+    void getUsers_whenGetUsers_thenSucceeds() {
 
         List<User> expectedUsers = TestUserBuilder.createUsers();
 
@@ -124,7 +127,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testRemoveUser_succeeds() {
+    void removeUser_whenRemoveUser_thenSucceed() {
 
         Long userId = 12L;
 
@@ -132,11 +135,11 @@ public class UserServiceTest {
 
         userService.removeUser(userId);
 
-        verify(userRepository,times(1)).deleteById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
 
     @Test
-    void testGetDetails_validUserId() {
+    void getDetails_whenGetUserDetails_thenSucceed() {
 
         User user = TestUserBuilder.createUser();
 
@@ -145,11 +148,11 @@ public class UserServiceTest {
         User actualUserDetails = userService.getDetails(user.getId());
 
         assertNotNull(actualUserDetails);
-        assertEquals(user,actualUserDetails);
+        assertEquals(user, actualUserDetails);
     }
 
     @Test
-    void testGetDetails_invalidUserId() {
+    void getDetails_whenGetDetailsWithInvalidUserId_thenThrowsUserNotFoundException() {
 
         Long userId = 24L;
 
@@ -159,7 +162,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void testAdminUser_adminUserDoesNotExist() {
+    void createAdminUser_whenAdminUserDoesNotExist_thenSucceed() {
 
         User user = TestUserBuilder.createAdminUser();
 
@@ -173,11 +176,11 @@ public class UserServiceTest {
 
         userService.createAdminUser();
 
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void testCreateAdminUser_adminUserExists() {
+    void createAdminUser_whenAdminUserExist_thenFail() {
 
         User adminUser = TestUserBuilder.createAdminUser();
 

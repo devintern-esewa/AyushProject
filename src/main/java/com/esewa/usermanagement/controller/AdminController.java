@@ -4,9 +4,7 @@ import com.esewa.usermanagement.entity.User;
 import com.esewa.usermanagement.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,13 +24,13 @@ public class AdminController {
     }
 
     @GetMapping("/user")
-    public List<User> users(){
+    public List<User> users() {
         return adminService.getUsers();
     }
 
     @PostMapping("/user/{id}/remove")
-    public void remove(@PathVariable("id") Long userId){
-         adminService.removeUser(userId);
+    public void remove(@PathVariable("id") Long userId) {
+        adminService.removeUser(userId);
     }
 
 }

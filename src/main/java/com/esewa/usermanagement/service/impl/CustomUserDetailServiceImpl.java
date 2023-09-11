@@ -1,4 +1,4 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
 import com.esewa.usermanagement.repository.UserRepository;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -17,7 +17,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) {
 
         return userRepository.findByName(username)
-                .map(CustomUserDetail::new)
+                .map(CustomUserDetailImpl::new)
                 .orElseThrow(UserNotFoundException::new);
     }
 }

@@ -1,4 +1,4 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.entity.User;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomUserDetail implements UserDetails {
+public class CustomUserDetailImpl implements UserDetails {
 
     private User user;
     @Override

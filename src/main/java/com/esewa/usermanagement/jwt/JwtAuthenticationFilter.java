@@ -1,6 +1,6 @@
 package com.esewa.usermanagement.jwt;
 
-import com.esewa.usermanagement.service.CustomUserDetailService;
+import com.esewa.usermanagement.service.impl.CustomUserDetailServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtHelper jwtHelper;
 
-    private final CustomUserDetailService userDetailsService;
+    private final CustomUserDetailServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

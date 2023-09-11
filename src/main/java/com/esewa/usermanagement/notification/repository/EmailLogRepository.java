@@ -1,6 +1,6 @@
-package com.esewa.usermanagement.repository;
+package com.esewa.usermanagement.notification.repository;
 
-import com.esewa.usermanagement.entity.EmailLog;
+import com.esewa.usermanagement.notification.entity.EmailLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

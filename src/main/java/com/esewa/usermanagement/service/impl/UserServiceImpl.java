@@ -1,4 +1,4 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.annotation.HashPassword;
 import com.esewa.usermanagement.configuration.AdminConfigurationProperties;
@@ -10,6 +10,7 @@ import com.esewa.usermanagement.exceptions.AlreadyRegisteredException;
 import com.esewa.usermanagement.exceptions.UserNotFoundException;
 import com.esewa.usermanagement.repository.UserRepository;
 import com.esewa.usermanagement.repository.WalletRepository;
+import com.esewa.usermanagement.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final WalletRepository walletRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminConfigurationProperties adminConfigurationProperties;
+    private final String BLACKLISTED_USER = "shivam";
 
     @Override
     @HashPassword
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
         walletRepository.save(new Wallet(0, savedUser.getId()));
 
         //Verify rollback on failure
-        if ("shivam".equals(user.getName())) {
+        if (BLACKLISTED_USER.equals(user.getName())) {
             throw new RuntimeException("Blacklisted User: " + user.getName());
         }
 

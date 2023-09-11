@@ -18,6 +18,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 jwt:
   secret:
@@ -36,5 +40,11 @@ thread:
   maxPoolSize: 10
   queueCapacity: 100
   threadNamePrefix: "Save-Multiple-Users-thread-pool-"
+
+flags:
+  sendEmail: false
+
+emailLogChar:
+  maxLength: 255
 
 

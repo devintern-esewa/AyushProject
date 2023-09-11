@@ -1,11 +1,12 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.notification.service;
 
-import com.esewa.usermanagement.enums.EmailMessage;
-import com.esewa.usermanagement.entity.EmailLog;
+import com.esewa.usermanagement.cache.service.EmailTemplateCacheService;
+import com.esewa.usermanagement.configuration.FlagsConfigurationProperties;
 import com.esewa.usermanagement.entity.User;
+import com.esewa.usermanagement.enums.EmailMessage;
 import com.esewa.usermanagement.enums.EmailStatus;
-import com.esewa.usermanagement.repository.EmailLogRepository;
-import com.esewa.usermanagement.repository.EmailTemplateRepository;
+import com.esewa.usermanagement.notification.entity.EmailLog;
+import com.esewa.usermanagement.notification.repository.EmailLogRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -17,29 +18,35 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class EmailServiceImpl implements EmailService {
+public class EmailService extends NotificationService {
 
     private final JavaMailSender javaMailSender;
     private final EmailLogRepository emailLogRepository;
-    private final EmailTemplateRepository emailTemplateRepository;
+    private final FlagsConfigurationProperties flagsConfigurationProperties;
+    private final EmailTemplateCacheService emailTemplateCacheService;
+
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    public EmailServiceImpl(JavaMailSender javaMailSender, EmailLogRepository emailLogRepository, EmailTemplateRepository emailTemplateRepository) {
+    @Value("${emailLogChar.maxLength}")
+    private int emailLogMaxCharacterLength;
+
+    public EmailService(JavaMailSender javaMailSender, EmailTemplateCacheService emailTemplateCacheService, EmailLogRepository emailLogRepository, FlagsConfigurationProperties flagsConfigurationProperties) {
         this.javaMailSender = javaMailSender;
+        this.emailTemplateCacheService = emailTemplateCacheService;
         this.emailLogRepository = emailLogRepository;
-        this.emailTemplateRepository =  emailTemplateRepository;
+        this.flagsConfigurationProperties = flagsConfigurationProperties;
     }
 
     @Async
     @Override
-    public void sendEmail(User userDetail) {
+    public void sendNotification(User userDetail) {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom(senderEmail);
         mailMessage.setTo(userDetail.getEmail());
         try {
-            emailTemplateRepository.findById(EmailMessage.REGISTRATION.getTemplateCode())
+             emailTemplateCacheService.getTemplateMessage(EmailMessage.REGISTRATION.getTemplateCode())
                     .ifPresentOrElse(emailTemplate -> {
                         String message = compileMessage(emailTemplate.getMessage(), Map.of("user", userDetail.getName(), "username", userDetail.getName()));
                         log.info(message);
@@ -50,19 +57,14 @@ public class EmailServiceImpl implements EmailService {
                         throw new RuntimeException(String.format("Error while sending email. Unable to find template for %s", EmailMessage.REGISTRATION.getTemplateMessage()));
                     });
 
-            //javaMailSender.send(mailMessage);
-            emailLogRepository.save(new EmailLog(userDetail.getEmail(), EmailStatus.SENT, mailMessage.getText()));
+            if (flagsConfigurationProperties.isSendEmail())
+                javaMailSender.send(mailMessage);
+
+            emailLogRepository.save(new EmailLog(userDetail.getEmail(), EmailStatus.SENT, mailMessage.getText(), null));
         } catch (Exception exception) {
             log.error(exception.getMessage());
-            emailLogRepository.save(new EmailLog(userDetail.getEmail(), EmailStatus.FAILED, mailMessage.getText()));
+            emailLogRepository.save(new EmailLog(userDetail.getEmail(), EmailStatus.FAILED, mailMessage.getText(), exception.getMessage().substring(0, emailLogMaxCharacterLength)));
         }
     }
 
-
-    private String compileMessage(String templateMessage, Map<String, String> map) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            templateMessage = templateMessage.replaceAll("\\{" + entry.getKey() + "}", entry.getValue());
-        }
-        return templateMessage;
-    }
 }

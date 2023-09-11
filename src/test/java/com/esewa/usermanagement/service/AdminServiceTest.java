@@ -2,6 +2,8 @@ package com.esewa.usermanagement.service;
 
 import com.esewa.usermanagement.entity.RegistrationLog;
 import com.esewa.usermanagement.entity.User;
+import com.esewa.usermanagement.notification.service.EmailService;
+import com.esewa.usermanagement.service.impl.AdminServiceImpl;
 import com.esewa.usermanagement.testobjectbuilder.TestUserBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,24 +32,26 @@ public class AdminServiceTest {
     @InjectMocks
     private AdminServiceImpl adminService;
 
+    private static final String BLACKLISTED_USER = "shivam";
+
     @Test
-    void givenValidUser_whenRegisterUser_thenSucceed() {
+    void registerUser_whenRegisterUser_thenSucceed() {
 
         User user = TestUserBuilder.createUser();
 
         when(userService.registerUser(user)).then(returnsFirstArg());
-        doNothing().when(emailService).sendEmail(user);
+        doNothing().when(emailService).sendNotification(user);
         User actualResult = adminService.registerUser(user);
 
         assertEquals(user, actualResult);
     }
 
     @Test
-    void givenValidUsers_whenRegisterMultipleUsers_thenSucceed() {
+    void registerMultipleUsers_whenRegisterMultipleUsers_thenSucceed() {
 
         List<User> usersToRegister = TestUserBuilder.createUsers();
 
-        doNothing().when(emailService).sendEmail(any(User.class));
+        doNothing().when(emailService).sendNotification(any(User.class));
         doNothing().when(registrationLogService).saveLog(any(RegistrationLog.class));
         when(userService.registerUserAsync(any(User.class)))
                 .thenAnswer(invocation -> CompletableFuture.completedFuture(invocation.getArgument(0)));
@@ -60,27 +64,27 @@ public class AdminServiceTest {
     }
 
     @Test
-    void testRegisterMultipleUsers_throwsException_forBlacklistedUser() {
+    void registerMultipleUsers_whenRegisterMultipleUsersWithBlacklistedUser_thenThrowsException() {
 
         List<User> users = TestUserBuilder.createUsers();
 
-        doNothing().when(emailService).sendEmail(any(User.class));
+        doNothing().when(emailService).sendNotification(any(User.class));
         doNothing().when(registrationLogService).saveLog(any(RegistrationLog.class));
         when(userService.registerUserAsync(any(User.class)))
                 .thenAnswer(invocation -> {
                     User user = invocation.getArgument(0);
-                    return !"shivam".equals(user.getName())
+                    return !BLACKLISTED_USER.equals(user.getName())
                             ? CompletableFuture.completedFuture(user)
                             : CompletableFuture.failedFuture(new RuntimeException("Blacklisted User"));
                 });
 
         List<User> registeredUsers = adminService.registerMultipleUsers(users);
 
-        assertEquals(users.size()-1,registeredUsers.size());
+        assertEquals(users.size() - 1, registeredUsers.size());
     }
 
     @Test
-    void testGetUsers_succeeds() {
+    void getUsers_whenGetUsers_thenSucceed() {
 
         List<User> users = TestUserBuilder.createUsers();
 
@@ -96,7 +100,7 @@ public class AdminServiceTest {
 
 
     @Test
-    void testRemoveUser_succeeds() {
+    void removeUser_whenRemoveUser_thenSucceed() {
 
         Long userIdToRemove = 133L;
 
@@ -104,7 +108,7 @@ public class AdminServiceTest {
 
         adminService.removeUser(userIdToRemove);
 
-        verify(userService, times(1)).removeUser(userIdToRemove);
+        verify(userService).removeUser(userIdToRemove);
     }
 
 }

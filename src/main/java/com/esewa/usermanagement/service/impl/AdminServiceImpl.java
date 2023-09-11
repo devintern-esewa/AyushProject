@@ -1,7 +1,11 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.entity.RegistrationLog;
 import com.esewa.usermanagement.entity.User;
+import com.esewa.usermanagement.notification.service.EmailService;
+import com.esewa.usermanagement.service.AdminService;
+import com.esewa.usermanagement.service.RegistrationLogService;
+import com.esewa.usermanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
     public User registerUser(User user) {
 
         User registeredUser = userService.registerUser(user);
-        emailService.sendEmail(registeredUser);
+        emailService.sendNotification(registeredUser);
         return registeredUser;
 
     }
@@ -62,7 +66,7 @@ public class AdminServiceImpl implements AdminService {
                     registrationLogService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
                 } else {
                     registrationLogService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
-                    emailService.sendEmail(user);
+                    emailService.sendNotification(user);
                 }
                 return user;
             });
