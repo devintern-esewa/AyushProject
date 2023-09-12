@@ -18,10 +18,10 @@ spring:
           auth: true
           starttls:
             enable: true
-
-email:
-  subject: "Registration"
-  msgBody: "Hello! \n\nYou are successfully registered.\n\n Thanks"
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 jwt:
   secret:
@@ -29,7 +29,7 @@ jwt:
   expiry: 1800000
 
 admin:
-  name: "Aayush"
+  name: "aayush"
   password: "aayush"
   email: "caayush96@gmail.com"
   role: "ROLE_ADMIN"
@@ -40,5 +40,11 @@ thread:
   maxPoolSize: 10
   queueCapacity: 100
   threadNamePrefix: "Save-Multiple-Users-thread-pool-"
+
+flags:
+  sendEmail: false
+
+emailLogChar:
+  maxLength: 255
 
 

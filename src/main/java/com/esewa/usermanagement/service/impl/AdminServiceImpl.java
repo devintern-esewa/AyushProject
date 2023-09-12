@@ -1,7 +1,11 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.entity.RegistrationLog;
 import com.esewa.usermanagement.entity.User;
+import com.esewa.usermanagement.notification.service.EmailService;
+import com.esewa.usermanagement.service.AdminService;
+import com.esewa.usermanagement.service.RegistrationLogService;
+import com.esewa.usermanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +19,12 @@ import java.util.concurrent.CompletableFuture;
 public class AdminServiceImpl implements AdminService {
 
     private final UserService userService;
-    private final RegistrationLogService logService;
+    private final RegistrationLogService registrationLogService;
     private final EmailService emailService;
 
-    public AdminServiceImpl (UserService userService, RegistrationLogService logService, EmailService emailService) {
+    public AdminServiceImpl (UserService userService, RegistrationLogService registrationLogService, EmailService emailService) {
         this.userService = userService;
-        this.logService = logService;
+        this.registrationLogService = registrationLogService;
         this.emailService = emailService;
         this.createAdminUser();
     }
@@ -29,7 +33,7 @@ public class AdminServiceImpl implements AdminService {
     public User registerUser(User user) {
 
         User registeredUser = userService.registerUser(user);
-        emailService.sendEmail(registeredUser.getEmail());
+        emailService.sendNotification(registeredUser);
         return registeredUser;
 
     }
@@ -51,7 +55,6 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return getSuccessfullyRegisteredUsers(asyncUserRegistrationList);
-
     }
 
     private void logRegistration(List<CompletableFuture<User>> asyncUserRegistrationList) {
@@ -59,10 +62,10 @@ public class AdminServiceImpl implements AdminService {
             future.handle((user, ex) -> {
                 if (ex != null) {
                     log.error("Error creating user: " + ex.getMessage());
-                    logService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
+                    registrationLogService.saveLog(new RegistrationLog(ex.getMessage(), new Date()));
                 } else {
-                    logService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
-                    emailService.sendEmail(user.getEmail());
+                    registrationLogService.saveLog(new RegistrationLog("Registered Successfully: " + user.getName(), new Date()));
+                    emailService.sendNotification(user);
                 }
                 return user;
             });

@@ -9,7 +9,9 @@ group = 'com.esewa'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '20'
+//	sourceCompatibility = '20'
+	sourceCompatibility = JavaVersion.VERSION_20
+
 }
 
 repositories {
@@ -26,12 +28,17 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'redis.clients:jedis'
 	compileOnly 'org.projectlombok:lombok:1.18.28'
 	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.projectlombok:lombok:1.18.28'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
