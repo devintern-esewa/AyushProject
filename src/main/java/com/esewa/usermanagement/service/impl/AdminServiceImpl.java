@@ -55,7 +55,6 @@ public class AdminServiceImpl implements AdminService {
         }
 
         return getSuccessfullyRegisteredUsers(asyncUserRegistrationList);
-
     }
 
     private void logRegistration(List<CompletableFuture<User>> asyncUserRegistrationList) {
