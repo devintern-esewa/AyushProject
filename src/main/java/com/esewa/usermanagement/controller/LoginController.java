@@ -2,7 +2,7 @@ package com.esewa.usermanagement.controller;
 
 import com.esewa.usermanagement.dto.JwtResponse;
 import com.esewa.usermanagement.dto.LoginDto;
-import com.esewa.usermanagement.service.LoginService;
+import com.esewa.usermanagement.service.impl.LoginServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LoginController {
 
-    private final LoginService loginService;
+    private final LoginServiceImpl loginService;
 
     @GetMapping
     public void homePage(){

@@ -2,17 +2,11 @@ package com.esewa.usermanagement.configuration;
 
 import com.esewa.usermanagement.jwt.JwtAuthenticationEntryPoint;
 import com.esewa.usermanagement.jwt.JwtAuthenticationFilter;
-import com.esewa.usermanagement.jwt.JwtHelper;
-import com.esewa.usermanagement.service.CustomUserDetail;
-import com.esewa.usermanagement.service.CustomUserDetailService;
+import com.esewa.usermanagement.service.impl.CustomUserDetailServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.bytecode.enhance.internal.tracker.NoopCollectionTracker;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.*;
@@ -27,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final CustomUserDetailService customUserDetailService;
+    private final CustomUserDetailServiceImpl customUserDetailService;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 

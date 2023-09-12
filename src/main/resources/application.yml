@@ -7,6 +7,21 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: cdraayush@gmail.com
+    password: "zecedmeofzxaoijc"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 jwt:
   secret:
@@ -14,7 +29,7 @@ jwt:
   expiry: 1800000
 
 admin:
-  name: "Aayush"
+  name: "aayush"
   password: "aayush"
   email: "caayush96@gmail.com"
   role: "ROLE_ADMIN"
@@ -25,5 +40,11 @@ thread:
   maxPoolSize: 10
   queueCapacity: 100
   threadNamePrefix: "Save-Multiple-Users-thread-pool-"
+
+flags:
+  sendEmail: false
+
+emailLogChar:
+  maxLength: 255
 
 

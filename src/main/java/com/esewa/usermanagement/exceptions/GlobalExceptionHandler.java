@@ -1,8 +1,7 @@
 package com.esewa.usermanagement.exceptions;
 
-import com.esewa.usermanagement.constants.Exceptions;
+import com.esewa.usermanagement.enums.Exceptions;
 import com.esewa.usermanagement.dto.ExceptionDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

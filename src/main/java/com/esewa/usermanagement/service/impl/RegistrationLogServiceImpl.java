@@ -1,7 +1,8 @@
-package com.esewa.usermanagement.service;
+package com.esewa.usermanagement.service.impl;
 
 import com.esewa.usermanagement.entity.RegistrationLog;
 import com.esewa.usermanagement.repository.RegistrationLogRepository;
+import com.esewa.usermanagement.service.RegistrationLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
