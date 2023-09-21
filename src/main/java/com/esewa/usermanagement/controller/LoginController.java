@@ -17,17 +17,10 @@ public class LoginController {
 
     private final LoginServiceImpl loginService;
 
-//    @Value("${database.password}")
-//    private String databasePassword;
-//
-//    @Value("${jwt.key}")
-//    private String jwtKey;
-
-
-    @Value("${external.property.database.password}")
+    @Value("${spring.datasource.password}")
     private String databasePassword;
 
-    @Value("${external.property.jwt.key}")
+    @Value("${jwt.secret.key}")
     private String jwtKey;
 
     @GetMapping
